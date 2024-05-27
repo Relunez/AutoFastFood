@@ -1,0 +1,340 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AutoAtendimento de Fast Food",
+    "version": "1.0.0",
+    "description": "APIs para o sistema de AutoAtendimento de Fast Food"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Docker Local"
+    }
+  ],
+  "paths": {
+    "/clientes": {
+      "post": {
+        "tags": ["Clientes"],
+        "summary": "Cadastrar novo cliente",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "CPF": {
+                    "type": "string",
+                    "example": "12345678901"
+                  },
+                  "Nome": {
+                    "type": "string",
+                    "example": "João da Silva"
+                  },
+                  "Email": {
+                    "type": "string",
+                    "example": "joao@example.com"
+                  }
+                },
+                "required": ["CPF", "Nome"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente cadastrado com sucesso"
+          },
+          "400": {
+            "description": "Erro de validação"
+          }
+        }
+      }
+    },
+    "/clientes/identificar": {
+      "get": {
+        "tags": ["Clientes"],
+        "summary": "Identificar cliente via CPF",
+        "parameters": [
+          {
+            "name": "CPF",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "12345678901"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "CPF": {
+                      "type": "string"
+                    },
+                    "Nome": {
+                      "type": "string"
+                    },
+                    "Email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          }
+        }
+      }
+    },
+    "/produtos": {
+      "post": {
+        "tags": ["Produtos"],
+        "summary": "Criar novo produto",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Nome": {
+                    "type": "string",
+                    "example": "Hamburguer"
+                  },
+                  "Descricao": {
+                    "type": "string",
+                    "example": "Delicioso hamburguer artesanal"
+                  },
+                  "Valor": {
+                    "type": "number",
+                    "example": 12.5
+                  },
+                  "Categoria": {
+                    "type": "string",
+                    "example": "Lanches"
+                  }
+                },
+                "required": ["Nome", "Valor", "Categoria"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto criado com sucesso"
+          },
+          "400": {
+            "description": "Erro de validação"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Produtos"],
+        "summary": "Editar produto existente",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Nome": {
+                    "type": "string",
+                    "example": "Hamburguer"
+                  },
+                  "Descricao": {
+                    "type": "string",
+                    "example": "Delicioso hamburguer artesanal"
+                  },
+                  "Valor": {
+                    "type": "number",
+                    "example": 12.5
+                  },
+                  "Categoria": {
+                    "type": "string",
+                    "example": "Lanches"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Produtos"],
+        "summary": "Remover produto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto removido com sucesso"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      }
+    },
+    "/produtos/buscar": {
+      "get": {
+        "tags": ["Produtos"],
+        "summary": "Buscar produtos por categoria",
+        "parameters": [
+          {
+            "name": "Categoria",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Lanches"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "Nome": {
+                        "type": "string"
+                      },
+                      "Descricao": {
+                        "type": "string"
+                      },
+                      "Valor": {
+                        "type": "number"
+                      },
+                      "Categoria": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos/checkout": {
+      "post": {
+        "tags": ["Pedidos"],
+        "summary": "Fake Checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ClienteId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "Produtos": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "ProdutoId": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "Quantidade": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": ["ClienteId", "Produtos"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pedido criado com sucesso"
+          },
+          "400": {
+            "description": "Erro de validação"
+          }
+        }
+      }
+    },
+    "/pedidos": {
+      "get": {
+        "tags": ["Pedidos"],
+        "summary": "Listar pedidos",
+        "responses": {
+          "200": {
+            "description": "Lista de pedidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "ClienteId": {
+                        "type": "integer"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
