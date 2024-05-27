@@ -2,35 +2,34 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\ProdutoRepository;
-use App\Models\Produto;
+use App\Http\Repositories\ProdutoRepositoryInterface;
 
 class ProdutoService
 {
-    protected $produtoRepository;
+    protected ProdutoRepositoryInterface $produtoRepository;
 
-    public function __construct(ProdutoRepository $produtoRepository)
+    public function __construct(ProdutoRepositoryInterface $produtoRepository)
     {
         $this->produtoRepository = $produtoRepository;
     }
 
-    public function criarProduto(array $data): Produto
+    public function criarProduto(string $type, array $data)
     {
-        return $this->produtoRepository->create($data);
+        return $this->produtoRepository->create($type, $data);
     }
 
-    public function editarProduto(int $id, array $data): ?Produto
+    public function editarProduto(string $type, int $id, array $data)
     {
-        return $this->produtoRepository->update($id, $data);
+        return $this->produtoRepository->update($type, $id, $data);
     }
 
-    public function removerProduto(int $id): bool
+    public function removerProduto(string $type, int $id): bool
     {
-        return $this->produtoRepository->delete($id);
+        return $this->produtoRepository->delete($type, $id);
     }
 
-    public function buscarPorCategoria(string $categoria)
+    public function buscarPorCategoria(string $type, string $id)
     {
-        return $this->produtoRepository->findByCategory($categoria);
+        return $this->produtoRepository->findByCategory($type, $id);
     }
 }

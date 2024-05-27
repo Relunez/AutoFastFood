@@ -11,6 +11,14 @@
       "description": "Docker Local"
     }
   ],
+  "components": {
+    "schemas": {
+      "TipoProdutoEnum": {
+        "type": "string",
+        "enum": ["Lanche", "Acompanhamento", "Bebida", "Sobremesa"]
+      }
+    }
+  },
   "paths": {
     "/clientes": {
       "post": {
@@ -99,8 +107,9 @@
     },
     "/produtos": {
       "post": {
+        "summary": "Criar um novo produto",
+        "description": "Cria um novo produto de acordo com os dados fornecidos",
         "tags": ["Produtos"],
-        "summary": "Criar novo produto",
         "requestBody": {
           "required": true,
           "content": {
@@ -110,22 +119,22 @@
                 "properties": {
                   "Nome": {
                     "type": "string",
-                    "example": "Hamburguer"
+                    "maxLength": 100
                   },
                   "Descricao": {
-                    "type": "string",
-                    "example": "Delicioso hamburguer artesanal"
+                    "type": "string"
                   },
                   "Valor": {
-                    "type": "number",
-                    "example": 12.5
+                    "type": "number"
                   },
                   "Categoria": {
-                    "type": "string",
-                    "example": "Lanches"
+                    "type": "string"
+                  },
+                  "TipoProduto": {
+                    "$ref": "#/components/schemas/TipoProdutoEnum"
                   }
                 },
-                "required": ["Nome", "Valor", "Categoria"]
+                "required": ["Nome", "Valor", "Categoria", "TipoProduto"]
               }
             }
           }
@@ -134,14 +143,27 @@
           "201": {
             "description": "Produto criado com sucesso"
           },
-          "400": {
+          "422": {
             "description": "Erro de validação"
           }
         }
-      },
+      }
+    },
+    "/produtos/{id}": {
       "put": {
+        "summary": "Editar um produto existente",
+        "description": "Edita um produto existente com base no ID e nos dados fornecidos",
         "tags": ["Produtos"],
-        "summary": "Editar produto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -151,21 +173,19 @@
                 "properties": {
                   "Nome": {
                     "type": "string",
-                    "example": "Hamburguer"
+                    "maxLength": 100
                   },
                   "Descricao": {
-                    "type": "string",
-                    "example": "Delicioso hamburguer artesanal"
+                    "type": "string"
                   },
                   "Valor": {
-                    "type": "number",
-                    "example": 12.5
+                    "type": "number"
                   },
-                  "Categoria": {
-                    "type": "string",
-                    "example": "Lanches"
+                  "TipoProduto": {
+                    "$ref": "#/components/schemas/TipoProdutoEnum"
                   }
-                }
+                },
+                "required": ["TipoProduto"]
               }
             }
           }
@@ -176,12 +196,16 @@
           },
           "404": {
             "description": "Produto não encontrado"
+          },
+          "422": {
+            "description": "Erro de validação"
           }
         }
       },
       "delete": {
+        "summary": "Remover um produto existente",
+        "description": "Remove um produto existente com base no ID e no tipo de produto fornecido",
         "tags": ["Produtos"],
-        "summary": "Remover produto existente",
         "parameters": [
           {
             "name": "id",
@@ -189,10 +213,25 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "example": 1
+            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "TipoProduto": {
+                    "$ref": "#/components/schemas/TipoProdutoEnum"
+                  }
+                },
+                "required": ["TipoProduto"]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Produto removido com sucesso"
@@ -203,51 +242,43 @@
         }
       }
     },
-    "/produtos/buscar": {
+    "/produtos/categoria/{id}": {
       "get": {
-        "tags": ["Produtos"],
         "summary": "Buscar produtos por categoria",
+        "description": "Busca produtos com base no ID da categoria e no tipo de produto fornecido",
+        "tags": ["Produtos"],
         "parameters": [
           {
-            "name": "Categoria",
-            "in": "query",
+            "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            },
-            "example": "Lanches"
+              "type": "integer"
+            }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Lista de produtos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer"
-                      },
-                      "Nome": {
-                        "type": "string"
-                      },
-                      "Descricao": {
-                        "type": "string"
-                      },
-                      "Valor": {
-                        "type": "number"
-                      },
-                      "Categoria": {
-                        "type": "string"
-                      }
-                    }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "TipoProduto": {
+                    "$ref": "#/components/schemas/TipoProdutoEnum"
                   }
-                }
+                },
+                "required": ["TipoProduto"]
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produtos encontrados"
+          },
+          "404": {
+            "description": "Produtos não encontrados"
           }
         }
       }
@@ -332,6 +363,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Pedidos não encontrados"
           }
         }
       }

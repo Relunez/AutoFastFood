@@ -5,9 +5,9 @@ namespace App\Http\Repositories;
 use App\Models\Pedido;
 
 
-class PedidoRepository
+class PedidoRepository implements PedidoRepositoryInterface
 {
-    protected $model;
+    protected Pedido $model;
 
     public function __construct(Pedido $model)
     {
@@ -19,7 +19,7 @@ class PedidoRepository
         return $this->model->create($data);
     }
 
-    public function all()
+    public function all(): \Illuminate\Database\Eloquent\Collection
     {
         return $this->model->all();
     }

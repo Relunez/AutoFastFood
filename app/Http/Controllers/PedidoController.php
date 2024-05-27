@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\ProdutoService;
+use Pedido;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
 {
-    protected $pedidoService;
-
-    public function __construct(PedidoService $pedidoService)
-    {
-        $this->pedidoService = $pedidoService;
-    }
-
-    public function fakeCheckout(Request $request)
+    public function fakeCheckout(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
             'ClienteId' => 'required|integer|exists:cliente,id',
@@ -23,14 +16,14 @@ class PedidoController extends Controller
             'Produtos.*.Quantidade' => 'required|integer|min:1',
         ]);
 
-        $pedido = $this->pedidoService->fakeCheckout($data);
+        $pedido = Pedido::fakeCheckout($data);
 
         return response()->json($pedido, 201);
     }
 
-    public function listarPedidos()
+    public function listarPedidos(): \Illuminate\Http\JsonResponse
     {
-        $pedidos = $this->pedidoService->listarPedidos();
+        $pedidos = Pedido::listarPedidos();
 
         return response()->json($pedidos);
     }

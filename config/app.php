@@ -123,4 +123,10 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'aliases' => [
+        'Cliente' => App\Facades\ClienteFacade::class,
+        'Pedido' => App\Facades\PedidoFacade::class,
+        'Produto' => App\Facades\ProdutoFacade::class,
+    ],
+
 ];

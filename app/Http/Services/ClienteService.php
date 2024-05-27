@@ -3,13 +3,13 @@
 namespace App\Http\Services;
 
 use App\Models\Cliente;
-use App\Http\Repositories\ClienteRepository;
+use App\Http\Repositories\ClienteRepositoryInterface;
 
 class ClienteService
 {
-    protected ClienteRepository $clienteRepository;
+    protected ClienteRepositoryInterface $clienteRepository;
 
-    public function __construct(ClienteRepository $clienteRepository)
+    public function __construct(ClienteRepositoryInterface $clienteRepository)
     {
         $this->clienteRepository = $clienteRepository;
     }

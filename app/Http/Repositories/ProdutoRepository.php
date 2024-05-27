@@ -2,25 +2,41 @@
 
 namespace App\Http\Repositories;
 
-use App\Models\Produto;
+use App\Models\Acompanhamento;
+use App\Models\Lanche;
+use App\Models\Bebida;
+use App\Models\Sobremesa;
 
-class ProdutoRepository
+class ProdutoRepository implements ProdutoRepositoryInterface
 {
-    protected $model;
+    protected array $models = [
+        'Acompanhamento' => Acompanhamento::class,
+        'Lanche' => Lanche::class,
+        'Bebida' => Bebida::class,
+        'Sobremesa' => Sobremesa::class,
+    ];
 
-    public function __construct(Produto $model)
+    public function getModel(string $type)
     {
-        $this->model = $model;
+        return $this->models[$type] ?? null;
     }
 
-    public function create(array $data): Produto
+    public function create(string $type, array $data)
     {
-        return $this->model->create($data);
+        $modelClass = $this->getModel($type);
+        if (!$modelClass) {
+            throw new \Exception("Invalid product type: {$type}");
+        }
+        return $modelClass::create($data);
     }
 
-    public function update(int $id, array $data): ?Produto
+    public function update(string $type, int $id, array $data)
     {
-        $produto = $this->model->find($id);
+        $modelClass = $this->getModel($type);
+        if (!$modelClass) {
+            throw new \Exception("Invalid product type: {$type}");
+        }
+        $produto = $modelClass::find($id);
         if ($produto) {
             $produto->update($data);
             return $produto;
@@ -28,17 +44,25 @@ class ProdutoRepository
         return null;
     }
 
-    public function delete(int $id): bool
+    public function delete(string $type, int $id)
     {
-        $produto = $this->model->find($id);
+        $modelClass = $this->getModel($type);
+        if (!$modelClass) {
+            throw new \Exception("Invalid product type: {$type}");
+        }
+        $produto = $modelClass::find($id);
         if ($produto) {
             return $produto->delete();
         }
         return false;
     }
 
-    public function findByCategory(string $categoria)
+    public function findByCategory(string $type, string $id)
     {
-        return $this->model->where('Categoria', $categoria)->get();
+        $modelClass = $this->getModel($type);
+        if (!$modelClass) {
+            throw new \Exception("Invalid product type: {$type}");
+        }
+        return $modelClass::find($id)->get();
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProdutoController;
@@ -17,7 +16,7 @@ Route::prefix('produtos')->group(function () {
     Route::post('/', [ProdutoController::class, 'criar']);
     Route::put('/{id}', [ProdutoController::class, 'editar']);
     Route::delete('/{id}', [ProdutoController::class, 'remover']);
-    Route::get('/buscar', [ProdutoController::class, 'buscarPorCategoria']);
+    Route::get('/buscar/{id}', [ProdutoController::class, 'buscarPorCategoria']);
 });
 
 // Rotas de Pedidos

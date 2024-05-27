@@ -2,42 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\ProdutoService;
+use Produto;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
-    protected $produtoService;
-
-    public function __construct(ProdutoService $produtoService)
-    {
-        $this->produtoService = $produtoService;
-    }
-
-    public function criar(Request $request)
+    public function criar(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
             'Nome' => 'required|string|max:100',
             'Descricao' => 'nullable|string',
             'Valor' => 'required|numeric',
             'Categoria' => 'required|string',
+            'TipoProduto' => 'required|string',
         ]);
 
-        $produto = $this->produtoService->criarProduto($data);
+        $produto = Produto::criarProduto($data['TipoProduto'] ,$data);
 
         return response()->json($produto, 201);
     }
 
-    public function editar(Request $request, int $id)
+    public function editar(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
             'Nome' => 'sometimes|string|max:100',
             'Descricao' => 'nullable|string',
             'Valor' => 'sometimes|numeric',
-            'Categoria' => 'sometimes|string',
+            'TipoProduto' => 'required|string',
         ]);
 
-        $produto = $this->produtoService->editarProduto($id, $data);
+        $produto = Produto::editarProduto($data['TipoProduto'], $id, $data);
 
         if (!$produto) {
             return response()->json(['message' => 'Produto não encontrado'], 404);
@@ -46,9 +40,13 @@ class ProdutoController extends Controller
         return response()->json($produto);
     }
 
-    public function remover(int $id)
+    public function remover(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
-        $removido = $this->produtoService->removerProduto($id);
+        $data = $request->validate([
+            'TipoProduto' => 'required|string',
+        ]);
+
+        $removido = Produto::removerProduto($data['TipoProduto'], $id);
 
         if (!$removido) {
             return response()->json(['message' => 'Produto não encontrado'], 404);
@@ -57,13 +55,17 @@ class ProdutoController extends Controller
         return response()->json(['message' => 'Produto removido com sucesso']);
     }
 
-    public function buscarPorCategoria(Request $request)
+    public function buscarPorCategoria(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
-            'Categoria' => 'required|string',
+            'TipoProduto' => 'required|string',
         ]);
 
-        $produtos = $this->produtoService->buscarPorCategoria($data['Categoria']);
+        $produtos = Produto::buscarPorCategoria($data['TipoProduto'], $id);
+
+        if (!$produtos) {
+            return response()->json(['message' => 'Produtos não encontrados'], 404);
+        }
 
         return response()->json($produtos);
     }

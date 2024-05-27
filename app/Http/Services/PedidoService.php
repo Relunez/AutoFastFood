@@ -2,14 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\PedidoRepository;
+use App\Http\Repositories\PedidoRepositoryInterface;
 use App\Models\Pedido;
 
 class PedidoService
 {
-    protected $pedidoRepository;
+    protected PedidoRepositoryInterface $pedidoRepository;
 
-    public function __construct(PedidoRepository $pedidoRepository)
+    public function __construct(PedidoRepositoryInterface $pedidoRepository)
     {
         $this->pedidoRepository = $pedidoRepository;
     }
@@ -19,7 +19,7 @@ class PedidoService
         return $this->pedidoRepository->create($data);
     }
 
-    public function listarPedidos()
+    public function listarPedidos(): \Illuminate\Database\Eloquent\Collection
     {
         return $this->pedidoRepository->all();
     }

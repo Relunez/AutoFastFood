@@ -1,6 +1,6 @@
 # AutoAtendimento de Fast Food
 
-Este é um sistema de AutoAtendimento de Fast Food construído com Laravel, Docker e Swagger UI para documentação de APIs.
+Este é um sistema de AutoAtendimento de Fast Food construído com Laravel, Docker e Swagger UI.
 
 ## Pré-requisitos
 
@@ -11,9 +11,45 @@ Para instalar e rodar este sistema no Windows usando WSL (Windows Subsystem for 
 3. **Docker Desktop**: [Baixar Docker Desktop](https://www.docker.com/products/docker-desktop) (Certifique-se de habilitar a integração com WSL 2 durante a instalação)
 4. **Git**: [Baixar Git](https://git-scm.com/downloads)
 
+## Estrutura
+Pensando em uma arquitetura hexagonal teremos a pasta Models como o Domain, Services como o Application e Controllers + Repositories como Infrastructure
+
+```
+app/
+├── Http/
+│   ├── Controllers/ - Infrastructure
+│   │   ├── Controller.php
+│   │   ├── ClienteController.php
+│   │   ├── PedidoController.php
+│   │   └── ProdutoController.php
+│   ├── Repositories/ - Infrastructure
+│   │   ├── ClienteRepository.php
+│   │   ├── ClienteRepositoryInterface.php
+│   │   ├── PedidoRepository.php
+│   │   ├── PedidoRepositoryInterface.php
+│   │   ├── ProdutoRepository.php
+│   │   └── ProdutoRepositoryInterface.php
+│   ├── Services/ - Application
+│   │   ├── ClienteService.php
+│   │   ├── PedidoService.php
+│   │   └── ProdutoService.php
+└── Models/ - Domain
+    ├── Acompanhamento.php
+    ├── Bebida.php
+    ├── Cliente.php
+    ├── Lanche.php
+    ├── Pagamento.php
+    ├── Pedido.php
+    ├── PedidoProduto.php
+    ├── Sobremesa.php
+    ├── Status.php
+    ├── StatusPagamento.php
+    └── StatusPedido.php
+```
+
 ## Variáveis de Ambiente
 
-Você precisará configurar algumas variáveis de ambiente no arquivo `.env` na raiz do projeto. Copie o arquivo `.env.example` para `.env` e ajuste as variáveis de ambiente relacionadas ao banco de dados conforme necessário:
+Você precisará configurar algumas variáveis de ambiente no arquivo `.env` na raiz do projeto. Copie o arquivo `.env.example` para `.env` e ajuste as variáveis de ambiente relacionadas ao banco de dados conforme necessário exemplo:
 
 ```env
 APP_ENV=local

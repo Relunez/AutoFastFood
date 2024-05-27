@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\ClienteService;
+use Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    protected ClienteService $clienteService;
-
-    public function __construct(ClienteService $clienteService)
-    {
-        $this->clienteService = $clienteService;
-    }
-
     public function cadastrar(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
@@ -27,7 +20,7 @@ class ClienteController extends Controller
             return response()->json(['error' => 'Pelo menos um dos campos CPF, Nome ou Email deve ser fornecido'], 400);
         }
 
-        $cliente = $this->clienteService->cadastrarCliente($data);
+        $cliente = Cliente::cadastrarCliente($data);
 
         return response()->json($cliente, 201);
     }
@@ -38,7 +31,7 @@ class ClienteController extends Controller
             'CPF' => 'required|string|max:11',
         ]);
 
-        $cliente = $this->clienteService->identificarClientePorCPF($data['CPF']);
+        $cliente = Cliente::identificarClientePorCPF($data['CPF']);
 
         if (!$cliente) {
             return response()->json(['message' => 'Cliente não encontrado'], 404);
