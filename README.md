@@ -66,7 +66,7 @@ DB_PASSWORD=laravel
 
 Após se certificar de todos os pre-requisitos vamos subir e ligar o sistema.
 
-1. **Clone o projeto** ```git clone``` [Repositorio](https://github.com/seu-usuario/autoatendimento-fastfood.git)
+1. **Clone o projeto** ```git clone``` [AutoFastFood.git](https://github.com/Relunez/AutoFastFood.git)
 2. **Entre no projeto** ```cd autoatendimento-fastfood```
 3. (Opicional)**Crie o .env** ```cp .env.example .env```
 4. (Opicional)**Altere as variaveis necessarias no .env**
