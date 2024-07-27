@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   db:
-    image: mariadb:11.4.1-rc
+    image: mariadb:latest
     container_name: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -29,11 +27,10 @@ services:
       DB_DATABASE: AutoFastFood
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
-    command: 'bash -c "cp .env.example .env && composer install && php artisan key:generate && php artisan migrate && php artisan serve --host 0.0.0.0 --port 8000"'
+    command: 'bash -c "composer install && php artisan key:generate && php artisan migrate && php artisan serve --host 0.0.0.0 --port 8000"'
     working_dir: /var/www/
     volumes:
-      - ./:/var/www/
-      - /tmp:/.composer
+      - .:/var/www/
     ports:
       - "8000:8000"
     restart: always

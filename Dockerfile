@@ -1,8 +1,5 @@
-FROM php:8.2
+FROM php:8.2-fpm
 LABEL authors="Relunez"
-
-ARG USER=1000
-ARG GROUP=1000
 
 RUN apt-get update && apt-get install -y zip unzip git libcurl4-openssl-dev curl libzip-dev \
     && docker-php-ext-install pdo pdo_mysql zip \
@@ -12,10 +9,14 @@ RUN apt-get update && apt-get install -y zip unzip git libcurl4-openssl-dev curl
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN groupadd -g $GROUP docker && useradd -u $USER -g $GROUP -m -s /bin/bash docker
-
 WORKDIR /var/www
 
-USER docker
+COPY . .
+
+RUN composer install
+
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www/storage \
+    && chmod -R 755 /var/www/bootstrap/cache
 
 EXPOSE 8000

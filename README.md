@@ -67,11 +67,11 @@ DB_PASSWORD=laravel
 Após se certificar de todos os pre-requisitos vamos subir e ligar o sistema.
 
 1. **Clone o projeto** ```git clone``` [AutoFastFood.git](https://github.com/Relunez/AutoFastFood.git)
-2. **Entre no projeto** ```cd autoatendimento-fastfood```
+2. **Entre no projeto** ```cd AutoFastFood```
 3. (Opicional)**Crie o .env** ```cp .env.example .env```
 4. (Opicional)**Altere as variaveis necessarias no .env**
-5. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
-6. (Opicional)**Instale as dependencias** ```composer install && npm install```
+5. **Instale as dependencias** ```composer install && npm install```
+6. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
 7. **Inicie os conteiners** ```docker-compose up -d```
 8. (Opicional)**Desligue os conteiners** ```docker-compose down```
 
