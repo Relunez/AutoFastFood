@@ -10,7 +10,13 @@ Para instalar e rodar este sistema no Windows usando WSL (Windows Subsystem for 
 2. **WSL 2**: [Guia de instalação do WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install)
 3. **Docker Desktop**: [Baixar Docker Desktop](https://www.docker.com/products/docker-desktop) (Certifique-se de habilitar a integração com WSL 2 durante a instalação)
 4. **Git**: [Baixar Git](https://git-scm.com/downloads)
-
+5. **PHP**: ```sudo apt install php php-curl php-fpm php-common libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-bcmath php-tokenizer php-json php-pear```
+6. **Composer** [Instalar Composer](https://getcomposer.org/download/)
+   1. ```php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"```
+   2. ```php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"```
+   3. ```php composer-setup.php```
+   4. ```php -r "unlink('composer-setup.php');"```
+   5. ```sudo mv composer.phar /usr/local/bin/composer```
 ## Estrutura
 Pensando em uma arquitetura hexagonal teremos a pasta Models como o Domain, Services como o Application e Controllers + Repositories como Infrastructure
 
