@@ -2,34 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClienteCadastrarRequest;
+use App\Http\Requests\ClienteIdentificarRequest;
 use Cliente;
-use Illuminate\Http\Request;
 
-class ClienteController extends Controller
+class ClienteController
 {
-    public function cadastrar(Request $request): \Illuminate\Http\JsonResponse
+    public function cadastrar(ClienteCadastrarRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->validate([
-            'CPF' => 'nullable|string|max:11|unique:cliente',
-            'Nome' => 'nullable|string|max:100',
-            'Email' => 'nullable|string|email|max:100',
-        ]);
-
-        // Verificar se pelo menos um campo foi fornecido
-        if (!$request->filled('CPF') && !$request->filled('Nome') && !$request->filled('Email')) {
-            return response()->json(['error' => 'Pelo menos um dos campos CPF, Nome ou Email deve ser fornecido'], 400);
-        }
+        $data = $request->all();
 
         $cliente = Cliente::cadastrarCliente($data);
 
         return response()->json($cliente, 201);
     }
 
-    public function identificar(Request $request): \Illuminate\Http\JsonResponse
+    public function identificar(ClienteIdentificarRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->validate([
-            'CPF' => 'required|string|max:11',
-        ]);
+        $data = $request->all();
 
         $cliente = Cliente::identificarClientePorCPF($data['CPF']);
 

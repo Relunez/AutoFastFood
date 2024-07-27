@@ -77,9 +77,10 @@ Após se certificar de todos os pre-requisitos vamos subir e ligar o sistema.
 3. (Opicional)**Crie o .env** ```cp .env.example .env```
 4. (Opicional)**Altere as variaveis necessarias no .env**
 5. **Instale as dependencias** ```composer install && npm install```
-6. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
-7. **Inicie os conteiners** ```docker-compose up -d```
-8. (Opicional)**Desligue os conteiners** ```docker-compose down```
+6. (Opicional)**Gere o helper para as IDEs** ```php artisan ide-helper:generate```
+7. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
+8. **Inicie os conteiners** ```docker-compose up -d```
+9. (Opicional)**Desligue os conteiners** ```docker-compose down```
 
 ## Swagger UI
 

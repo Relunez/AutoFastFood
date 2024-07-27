@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PedidoFakeCheckoutRequest;
 use Pedido;
-use Illuminate\Http\Request;
 
-class PedidoController extends Controller
+class PedidoController
 {
-    public function fakeCheckout(Request $request): \Illuminate\Http\JsonResponse
+    public function fakeCheckout(PedidoFakeCheckoutRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->validate([
-            'ClienteId' => 'required|integer|exists:cliente,id',
-            'Produtos' => 'required|array',
-            'Produtos.*.ProdutoId' => 'required|integer',
-            'Produtos.*.Quantidade' => 'required|integer|min:1',
-        ]);
+        $data = $request->all();
 
         $pedido = Pedido::fakeCheckout($data);
 
-        return response()->json($pedido, 201);
+        return response()->json(['message' => 'Pedido criado com sucesso', 'pedido_id' => $pedido->id], 201);
     }
 
     public function listarPedidos(): \Illuminate\Http\JsonResponse
     {
         $pedidos = Pedido::listarPedidos();
+
+        return response()->json($pedidos);
+    }
+
+    public function atualizarStatus(PedidoAtualizarStatusRequest $request, int $id): \Illuminate\Http\JsonResponse
+    {
+        $pedidos = Pedido::atualizarStatus();
 
         return response()->json($pedidos);
     }

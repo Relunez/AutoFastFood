@@ -12,8 +12,7 @@ class CreatePedidoProdutosTable extends Migration
             Schema::create('pedido_produtos', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('PedidoId')->constrained('pedido');
-                $table->integer('ProdutoId');
-                $table->enum('ProdutoTipo', ['Lanche', 'Acompanhamento', 'Bebida', 'Sobremesa']);
+                $table->foreignId('ProdutoId')->constrained('produtos');
                 $table->date('DataPedidoProdutos');
                 $table->time('HoraPedidoProdutos');
                 $table->timestamps();
