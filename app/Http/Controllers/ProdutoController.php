@@ -12,7 +12,7 @@ class ProdutoController
 {
     public function criar(ProdutoCriarRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $produto = Produto::criarProduto($data);
 
@@ -21,7 +21,7 @@ class ProdutoController
 
     public function editar(ProdutoEditarRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $produto = Produto::editarProduto($id, $data);
 
@@ -34,7 +34,7 @@ class ProdutoController
 
     public function remover(ProdutoRemoverRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $removido = Produto::removerProduto($id);
 
@@ -47,7 +47,7 @@ class ProdutoController
 
     public function buscarPorCategoria(ProdutoBuscarPorCategoriaRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $produtos = Produto::buscarPorCategoria($id);
 

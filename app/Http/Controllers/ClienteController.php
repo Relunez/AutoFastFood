@@ -10,7 +10,7 @@ class ClienteController
 {
     public function cadastrar(ClienteCadastrarRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $cliente = Cliente::cadastrarCliente($data);
 
@@ -19,7 +19,7 @@ class ClienteController
 
     public function identificar(ClienteIdentificarRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         $cliente = Cliente::identificarClientePorCPF($data['CPF']);
 

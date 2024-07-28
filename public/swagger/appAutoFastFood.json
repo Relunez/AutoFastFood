@@ -16,91 +16,292 @@
       "TipoProdutoEnum": {
         "type": "string",
         "enum": ["Lanche", "Acompanhamento", "Bebida", "Sobremesa"]
+      },
+      "PedidoAtualizarStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["Pronto", "Em Preparação", "Recebido"]
+          }
+        },
+        "required": ["status"]
+      },
+      "PedidoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "ClienteId": {
+            "type": "integer"
+          },
+          "DataPedido": {
+            "type": "string",
+            "format": "date"
+          },
+          "HoraPedido": {
+            "type": "string",
+            "format": "time"
+          },
+          "Produtos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ProdutoId": {
+                  "type": "integer"
+                },
+                "Quantidade": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "Status": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "PedidoFakeCheckoutRequest": {
+        "type": "object",
+        "properties": {
+          "ClienteId": {
+            "type": "integer"
+          },
+          "Produtos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ProdutoId": {
+                  "type": "integer"
+                },
+                "Quantidade": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ClienteCadastrarRequest": {
+        "type": "object",
+        "properties": {
+          "CPF": {
+            "type": "string"
+          },
+          "Nome": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          }
+        }
+      },
+      "ClienteIdentificarRequest": {
+        "type": "object",
+        "properties": {
+          "CPF": {
+            "type": "string"
+          },
+          "Nome": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          }
+        }
+      },
+      "ClienteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "CPF": {
+            "type": "string"
+          },
+          "Nome": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          }
+        }
+      },
+      "ProdutoBuscarPorCategoriaRequest": {
+        "type": "object",
+        "properties": {
+          "Categoria": {
+            "type": "string"
+          }
+        }
+      },
+      "ProdutoCriarRequest": {
+        "type": "object",
+        "properties": {
+          "Nome": {
+            "type": "string"
+          },
+          "Descricao": {
+            "type": "string"
+          },
+          "Valor": {
+            "type": "number",
+            "format": "float"
+          },
+          "TipoProduto": {
+            "type": "string"
+          }
+        }
+      },
+      "ProdutoEditarRequest": {
+        "type": "object",
+        "properties": {
+          "ProdutoId": {
+            "type": "integer"
+          },
+          "Nome": {
+            "type": "string"
+          },
+          "Descricao": {
+            "type": "string"
+          },
+          "Valor": {
+            "type": "number",
+            "format": "float"
+          },
+          "TipoProduto": {
+            "type": "string"
+          }
+        }
+      },
+      "ProdutoRemoverRequest": {
+        "type": "object",
+        "properties": {
+          "ProdutoId": {
+            "type": "integer"
+          }
+        }
+      },
+      "Produto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "Nome": {
+            "type": "string"
+          },
+          "Descricao": {
+            "type": "string"
+          },
+          "Valor": {
+            "type": "number",
+            "format": "float"
+          },
+          "TipoProduto": {
+            "type": "string"
+          }
+        }
       }
     }
   },
   "paths": {
     "/clientes": {
       "post": {
-        "tags": ["Clientes"],
+        "tags": [
+          "Clientes"
+        ],
         "summary": "Cadastrar novo cliente",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "CPF": {
-                    "type": "string",
-                    "example": "12345678901"
-                  },
-                  "Nome": {
-                    "type": "string",
-                    "example": "João da Silva"
-                  },
-                  "Email": {
-                    "type": "string",
-                    "example": "joao@example.com"
-                  }
-                },
-                "required": ["CPF", "Nome"]
+                "$ref": "#/components/schemas/ClienteCadastrarRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Cliente cadastrado com sucesso"
+            "description": "Cliente cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Erro de validação"
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/clientes/identificar": {
       "get": {
-        "tags": ["Clientes"],
-        "summary": "Identificar cliente via CPF",
-        "parameters": [
-          {
-            "name": "CPF",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "12345678901"
-          }
+        "tags": [
+          "Clientes"
         ],
+        "summary": "Identificar cliente",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteIdentificarRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Cliente encontrado",
+            "description": "Cliente identificado com sucesso",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "CPF": {
-                      "type": "string"
-                    },
-                    "Nome": {
-                      "type": "string"
-                    },
-                    "Email": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "#/components/schemas/ClienteResponse"
                 }
               }
             }
           },
           "404": {
-            "description": "Cliente não encontrado"
+            "description": "Cliente não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -109,42 +310,39 @@
       "post": {
         "summary": "Criar um novo produto",
         "description": "Cria um novo produto de acordo com os dados fornecidos",
-        "tags": ["Produtos"],
+        "tags": [
+          "Produtos"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "Nome": {
-                    "type": "string",
-                    "maxLength": 100
-                  },
-                  "Descricao": {
-                    "type": "string"
-                  },
-                  "Valor": {
-                    "type": "number"
-                  },
-                  "Categoria": {
-                    "type": "string"
-                  },
-                  "TipoProduto": {
-                    "$ref": "#/components/schemas/TipoProdutoEnum"
-                  }
-                },
-                "required": ["Nome", "Valor", "Categoria", "TipoProduto"]
+                "$ref": "#/components/schemas/ProdutoCriarRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Produto criado com sucesso"
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
           },
           "422": {
-            "description": "Erro de validação"
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -153,7 +351,9 @@
       "put": {
         "summary": "Editar um produto existente",
         "description": "Edita um produto existente com base no ID e nos dados fornecidos",
-        "tags": ["Produtos"],
+        "tags": [
+          "Produtos"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -169,43 +369,50 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "Nome": {
-                    "type": "string",
-                    "maxLength": 100
-                  },
-                  "Descricao": {
-                    "type": "string"
-                  },
-                  "Valor": {
-                    "type": "number"
-                  },
-                  "TipoProduto": {
-                    "$ref": "#/components/schemas/TipoProdutoEnum"
-                  }
-                },
-                "required": ["TipoProduto"]
+                "$ref": "#/components/schemas/ProdutoEditarRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Produto atualizado com sucesso"
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Produto não encontrado"
+            "description": "Produto não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "422": {
-            "description": "Erro de validação"
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "summary": "Remover um produto existente",
         "description": "Remove um produto existente com base no ID e no tipo de produto fornecido",
-        "tags": ["Produtos"],
+        "tags": [
+          "Produtos"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -221,13 +428,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "TipoProduto": {
-                    "$ref": "#/components/schemas/TipoProdutoEnum"
-                  }
-                },
-                "required": ["TipoProduto"]
+                "$ref": "#/components/schemas/ProdutoRemoverRequest"
               }
             }
           }
@@ -237,7 +438,14 @@
             "description": "Produto removido com sucesso"
           },
           "404": {
-            "description": "Produto não encontrado"
+            "description": "Produto não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -245,8 +453,10 @@
     "/produtos/categoria/{id}": {
       "get": {
         "summary": "Buscar produtos por categoria",
-        "description": "Busca produtos com base no ID da categoria e no tipo de produto fornecido",
-        "tags": ["Produtos"],
+        "description": "Busca produtos com base no ID da categoria",
+        "tags": [
+          "Produtos"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -257,82 +467,78 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "TipoProduto": {
-                    "$ref": "#/components/schemas/TipoProdutoEnum"
-                  }
-                },
-                "required": ["TipoProduto"]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Produtos encontrados"
+            "description": "Produtos encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produto"
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Produtos não encontrados"
+            "description": "Produtos não encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/pedidos/checkout": {
       "post": {
-        "tags": ["Pedidos"],
+        "tags": [
+          "Pedidos"
+        ],
         "summary": "Fake Checkout",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "ClienteId": {
-                    "type": "integer",
-                    "example": 1
-                  },
-                  "Produtos": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "ProdutoId": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "Quantidade": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      }
-                    }
-                  }
-                },
-                "required": ["ClienteId", "Produtos"]
+                "$ref": "#/components/schemas/PedidoFakeCheckoutRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Pedido criado com sucesso"
+            "description": "Pedido criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Erro de validação"
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/pedidos": {
       "get": {
-        "tags": ["Pedidos"],
+        "tags": [
+          "Pedidos"
+        ],
         "summary": "Listar pedidos",
         "responses": {
           "200": {
@@ -342,30 +548,74 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer"
-                      },
-                      "ClienteId": {
-                        "type": "integer"
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
+                    "$ref": "#/components/schemas/PedidoResponse"
                   }
                 }
               }
             }
           },
           "404": {
-            "description": "Pedidos não encontrados"
+            "description": "Pedidos não encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos/status/{id}": {
+      "put": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Atualizar Status do Pedido",
+        "description": "Atualiza o status do pedido.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do pedido"
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoAtualizarStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }

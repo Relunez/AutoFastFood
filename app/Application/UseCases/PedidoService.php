@@ -5,7 +5,6 @@ namespace App\Application\UseCases;
 use App\Domain\Repositories\PagamentoRepositoryInterface;
 use App\Domain\Repositories\PedidoRepositoryInterface;
 use App\Domain\Repositories\StatusPedidoRepository;
-use App\Infrastructure\Persistence\Pedido;
 
 class PedidoService
 {
@@ -29,18 +28,21 @@ class PedidoService
     protected PedidoRepositoryInterface $pedidoRepository;
     protected PagamentoRepositoryInterface $pagamentoRepository;
     protected StatusPedidoRepository $statusPedidoRepository;
+    private MercadoPagoService $mercadoPagoService;
 
     public function __construct(
         PedidoRepositoryInterface $pedidoRepository,
         PagamentoRepositoryInterface $pagamentoRepository,
-        StatusPedidoRepository $statusPedidoRepository
+        StatusPedidoRepository $statusPedidoRepository,
+        MercadoPagoService $mercadoPagoService
     ) {
         $this->pedidoRepository = $pedidoRepository;
         $this->pagamentoRepository = $pagamentoRepository;
         $this->statusPedidoRepository = $statusPedidoRepository;
+        $this->mercadoPagoService = $mercadoPagoService;
     }
 
-    public function fakeCheckout(array $data): Pedido
+    public function fakeCheckout(array $data): array
     {
         $pedido = $this->pedidoRepository->create($data);
 
@@ -57,7 +59,14 @@ class PedidoService
             ]);
         }
 
-        return $this->pedidoRepository->get($pedido->id);
+        $paymentData = $this->mercadoPagoService->createPayment([
+            'Produtos' => $data['Produtos']
+        ]);
+
+        return [
+            'pedido' => $this->pedidoRepository->get($pedido->id),
+            'pagamento' => $paymentData
+        ];
     }
 
     public function listarPedidos(): \Illuminate\Database\Eloquent\Collection
@@ -65,7 +74,7 @@ class PedidoService
         return $this->pedidoRepository->all();
     }
 
-    public function atualizarStatus(array $data,int $id): bool
+    public function atualizarStatus(array $data, int $id): bool
     {
         return $this->statusPedidoRepository->atualizarStatus($id, $data);
     }

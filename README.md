@@ -17,40 +17,56 @@ Para instalar e rodar este sistema no Windows usando WSL (Windows Subsystem for 
    3. ```php composer-setup.php```
    4. ```php -r "unlink('composer-setup.php');"```
    5. ```sudo mv composer.phar /usr/local/bin/composer```
+
 ## Estrutura
-Pensando em uma arquitetura hexagonal teremos a pasta Models como o Domain, Services como o Application e Controllers + Repositories como Infrastructure
+Pensando em Clean Code e Clean Architecture mas mantendo a simplicidade do framework do laravel, segreguei as pastas para uma melhor disposição mas mantendo as responsabilidades iniciais do laravel, como com o uso do eloquent(ORM) a separação de persistencia e objeto de negocio seria exclusivamente arbitraria, confira abaixo como ficou tudo.
 
 ```
-app/
-├── Http/
-│   ├── Controllers/ - Infrastructure
-│   │   ├── Controller.php
-│   │   ├── ClienteController.php
-│   │   ├── PedidoController.php
-│   │   └── ProdutoController.php
-│   ├── Repositories/ - Infrastructure
-│   │   ├── ClienteRepository.php
-│   │   ├── ClienteRepositoryInterface.php
-│   │   ├── PedidoRepository.php
-│   │   ├── PedidoRepositoryInterface.php
-│   │   ├── ProdutoRepository.php
-│   │   └── ProdutoRepositoryInterface.php
-│   ├── Services/ - Application
-│   │   ├── ClienteService.php
-│   │   ├── PedidoService.php
-│   │   └── ProdutoService.php
-└── Models/ - Domain
-    ├── Acompanhamento.php
-    ├── Bebida.php
-    ├── Cliente.php
-    ├── Lanche.php
-    ├── Pagamento.php
-    ├── Pedido.php
-    ├── PedidoProduto.php
-    ├── Sobremesa.php
-    ├── Status.php
-    ├── StatusPagamento.php
-    └── StatusPedido.php
+app
+└── Application
+    └── UseCases - Regra de Negocio
+        ├── ClienteService.php
+        ├── MercadoPagoService.php
+        ├── PedidoService.php
+        └── ProdutoService.php
+└── Domain
+    └── Repositories - Camada de abstração e interface com a persistencia
+        ├── ClienteRepository.php
+        ├── ClienteRepositoryInterface.php
+        ├── PagamentoRepository.php
+        ├── PagamentoRepositoryInterface.php
+        ├── PedidoRepository.php
+        ├── PedidoRepositoryInterface.php
+        ├── ProdutoRepository.php
+        ├── ProdutoRepositoryInterface.php
+        ├── StatusPedidoRepository.php
+        └── StatusPedidoRepositoryInterface.php
+└── Http
+    ├── Controllers - Interface WEB
+    │   ├── ClienteController.php
+    │   ├── MercadoPagoWebhookController.php
+    │   ├── PedidoController.php
+    │   └── ProdutoController.php
+    └── Requests - Modelo para interface WEB
+        ├── ClienteCadastrarRequest.php
+        ├── ClienteIdentificarRequest.php
+        ├── PedidoAtualizarStatusRequest.php
+        ├── PedidoFakeCheckoutRequest.php
+        ├── ProdutoBuscarPorCategoriaRequest.php
+        ├── ProdutoCriarRequest.php
+        ├── ProdutoEditarRequest.php
+        └── ProdutoRemoverRequest.php
+└── Infrastructure
+    ├── Persistence - Camada de persistencia no banco de dados
+    │   ├── Cliente.php
+    │   ├── Pagamento.php
+    │   ├── Pedido.php
+    │   ├── PedidoProduto.php
+    │   ├── Produtos.php
+    │   ├── Status.php
+    │   ├── StatusPagamento.php
+    │   ├── StatusPedido.php
+    └── └── TipoProduto.php
 ```
 
 ## Variáveis de Ambiente
@@ -66,6 +82,9 @@ DB_PORT=3306
 DB_DATABASE=AutoFastFood
 DB_USERNAME=laravel
 DB_PASSWORD=laravel
+MERCADOPAGO_ACCESS_TOKEN=SEU_TOKEN
+MERCADOPAGO_USER_ID=SEU_ID
+MERCADOPAGO_EXTERNAL_POS_ID=SEU_POS_ID
 ```
 
 ## Passo-a-Passo
@@ -87,3 +106,7 @@ Após se certificar de todos os pre-requisitos vamos subir e ligar o sistema.
 Para acessar a documentação das APIs usando Swagger UI, abra seu navegador e vá para:
 
 http://localhost:8000/api
+
+## Docs
+
+Em _docs, temos o MER do banco de dados e o JSON do OpenAPI/Swagger
