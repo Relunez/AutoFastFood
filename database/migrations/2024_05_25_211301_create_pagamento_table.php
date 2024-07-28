@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreatePagamentoTable extends Migration
@@ -14,11 +15,20 @@ class CreatePagamentoTable extends Migration
                 $table->string('DescPagamento', 100);
                 $table->timestamps();
             });
+
+            $this->seedPagamentoTable();
         }
     }
 
     public function down(): void
     {
         Schema::dropIfExists('pagamento');
+    }
+
+    private function seedPagamentoTable(): void
+    {
+        DB::table('pagamento')->insert([
+            ['DescPagamento' => 'MercadoPago'],
+        ]);
     }
 }

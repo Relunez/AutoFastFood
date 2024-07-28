@@ -23,4 +23,5 @@ Route::prefix('produtos')->group(function () {
 Route::prefix('pedidos')->group(function () {
     Route::post('/checkout', [PedidoController::class, 'fakeCheckout']);
     Route::get('/', [PedidoController::class, 'listarPedidos']);
+    Route::put('/{id}/status', [PedidoController::class, 'atualizarStatus']);
 });

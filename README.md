@@ -9,6 +9,9 @@ Para instalar e rodar este sistema no Windows usando WSL (Windows Subsystem for 
 1. **Windows 10 ou superior**
 2. **WSL 2**: [Guia de instalação do WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install)
 3. **Docker Desktop**: [Baixar Docker Desktop](https://www.docker.com/products/docker-desktop) (Certifique-se de habilitar a integração com WSL 2 durante a instalação)
+   1. **Habilitar o Kubernets** - Settings > Kubernets > Enable Kubernets [Habilitar Kubernets Docker Descktop](https://docs.docker.com/desktop/kubernetes/#install-and-turn-on-kubernetes)
+   2. Resources > WSL integration > Enable integration with my default WSL distro
+   3. Apply & restart
 4. **Git**: [Baixar Git](https://git-scm.com/downloads)
 5. **PHP**: ```sudo apt install php php-curl php-fpm php-common libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-bcmath php-tokenizer php-json php-pear```
 6. **Composer** [Instalar Composer](https://getcomposer.org/download/)
@@ -17,40 +20,56 @@ Para instalar e rodar este sistema no Windows usando WSL (Windows Subsystem for 
    3. ```php composer-setup.php```
    4. ```php -r "unlink('composer-setup.php');"```
    5. ```sudo mv composer.phar /usr/local/bin/composer```
+
 ## Estrutura
-Pensando em uma arquitetura hexagonal teremos a pasta Models como o Domain, Services como o Application e Controllers + Repositories como Infrastructure
+Pensando em Clean Code e Clean Architecture mas mantendo a simplicidade do framework do laravel, segreguei as pastas para uma melhor disposição mas mantendo as responsabilidades iniciais do laravel, como com o uso do eloquent(ORM) a separação de persistencia e objeto de negocio seria exclusivamente arbitraria, confira abaixo como ficou tudo.
 
 ```
-app/
-├── Http/
-│   ├── Controllers/ - Infrastructure
-│   │   ├── Controller.php
-│   │   ├── ClienteController.php
-│   │   ├── PedidoController.php
-│   │   └── ProdutoController.php
-│   ├── Repositories/ - Infrastructure
-│   │   ├── ClienteRepository.php
-│   │   ├── ClienteRepositoryInterface.php
-│   │   ├── PedidoRepository.php
-│   │   ├── PedidoRepositoryInterface.php
-│   │   ├── ProdutoRepository.php
-│   │   └── ProdutoRepositoryInterface.php
-│   ├── Services/ - Application
-│   │   ├── ClienteService.php
-│   │   ├── PedidoService.php
-│   │   └── ProdutoService.php
-└── Models/ - Domain
-    ├── Acompanhamento.php
-    ├── Bebida.php
-    ├── Cliente.php
-    ├── Lanche.php
-    ├── Pagamento.php
-    ├── Pedido.php
-    ├── PedidoProduto.php
-    ├── Sobremesa.php
-    ├── Status.php
-    ├── StatusPagamento.php
-    └── StatusPedido.php
+app
+└── Application
+    └── UseCases - Regra de Negocio
+        ├── ClienteService.php
+        ├── MercadoPagoService.php
+        ├── PedidoService.php
+        └── ProdutoService.php
+└── Domain
+    └── Repositories - Camada de abstração e interface com a persistencia
+        ├── ClienteRepository.php
+        ├── ClienteRepositoryInterface.php
+        ├── PagamentoRepository.php
+        ├── PagamentoRepositoryInterface.php
+        ├── PedidoRepository.php
+        ├── PedidoRepositoryInterface.php
+        ├── ProdutoRepository.php
+        ├── ProdutoRepositoryInterface.php
+        ├── StatusPedidoRepository.php
+        └── StatusPedidoRepositoryInterface.php
+└── Http
+    ├── Controllers - Interface WEB
+    │   ├── ClienteController.php
+    │   ├── MercadoPagoWebhookController.php
+    │   ├── PedidoController.php
+    │   └── ProdutoController.php
+    └── Requests - Modelo para interface WEB
+        ├── ClienteCadastrarRequest.php
+        ├── ClienteIdentificarRequest.php
+        ├── PedidoAtualizarStatusRequest.php
+        ├── PedidoFakeCheckoutRequest.php
+        ├── ProdutoBuscarPorCategoriaRequest.php
+        ├── ProdutoCriarRequest.php
+        ├── ProdutoEditarRequest.php
+        └── ProdutoRemoverRequest.php
+└── Infrastructure
+    ├── Persistence - Camada de persistencia no banco de dados
+    │   ├── Cliente.php
+    │   ├── Pagamento.php
+    │   ├── Pedido.php
+    │   ├── PedidoProduto.php
+    │   ├── Produtos.php
+    │   ├── Status.php
+    │   ├── StatusPagamento.php
+    │   ├── StatusPedido.php
+    └── └── TipoProduto.php
 ```
 
 ## Variáveis de Ambiente
@@ -61,11 +80,14 @@ Você precisará configurar algumas variáveis de ambiente no arquivo `.env` na 
 APP_ENV=local
 APP_DEBUG=true
 DB_CONNECTION=mysql
-DB_HOST=db
+DB_HOST=mariadb
 DB_PORT=3306
 DB_DATABASE=AutoFastFood
 DB_USERNAME=laravel
 DB_PASSWORD=laravel
+MERCADOPAGO_ACCESS_TOKEN=SEU_TOKEN
+MERCADOPAGO_USER_ID=SEU_ID
+MERCADOPAGO_EXTERNAL_POS_ID=SEU_POS_ID
 ```
 
 ## Passo-a-Passo
@@ -77,12 +99,26 @@ Após se certificar de todos os pre-requisitos vamos subir e ligar o sistema.
 3. (Opicional)**Crie o .env** ```cp .env.example .env```
 4. (Opicional)**Altere as variaveis necessarias no .env**
 5. **Instale as dependencias** ```composer install && npm install```
-6. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
-7. **Inicie os conteiners** ```docker-compose up -d```
-8. (Opicional)**Desligue os conteiners** ```docker-compose down```
+6. (Opicional)**Gere o helper para as IDEs** ```php artisan ide-helper:generate```
+7. (Opicional)**Gere a chave do sistemas** ```php artisan key:generate```
+8. **Buildar a imagem do docker** ```docker build -t autofastfood-php:latest .```
+9. **Subir o ambiente Kubernets**
+   1. ```kubectl apply -f _kubernets/bancoAutoFastFood_persistentVolumeClaim.yaml```
+   2. ```kubectl apply -f _kubernets/bancoAutoFastFood_stateFulSet.yaml```
+   3. ```kubectl apply -f _kubernets/bancoAutoFastFood_headLessStateFulSet.yaml```
+   4. ```kubectl apply -f _kubernets/bancoAutoFastFood_service.yaml```
+   5. ```kubectl apply -f _kubernets/appAutoFastFood_persistentVolumeClaim.yaml```
+   6. ```kubectl apply -f appAutoFastFood_deployment.yaml```
+   7. ```kubectl apply -f _kubernets/appAutoFastFood_service.yaml```
+   8. ```kubectl apply -f _kubernets/appAutoFastFood_hpa.yaml```
+   9. ```kubectl apply -f _kubernets/mercadoPago_secrets.yaml```
 
 ## Swagger UI
 
 Para acessar a documentação das APIs usando Swagger UI, abra seu navegador e vá para:
 
 http://localhost:8000/api
+
+## Docs
+
+Em _docs, temos o MER do banco de dados e o JSON do OpenAPI/Swagger
