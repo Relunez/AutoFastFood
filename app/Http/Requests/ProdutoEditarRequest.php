@@ -19,7 +19,7 @@ class ProdutoEditarRequest extends FormRequest
             'Nome' => 'sometimes|string|max:100',
             'Descricao' => 'nullable|string',
             'Valor' => 'sometimes|numeric',
-            'TipoProduto' => 'required|string',
+            'TipoProdutoId' => 'required|integer|exists:tipo_produto,id',
         ];
     }
 
@@ -32,8 +32,9 @@ class ProdutoEditarRequest extends FormRequest
             'Descricao.string' => 'A descrição deve ser uma string.',
             'Valor.sometimes' => 'O valor é opcional.',
             'Valor.numeric' => 'O valor deve ser um número.',
-            'TipoProduto.required' => 'O tipo de produto é obrigatório.',
-            'TipoProduto.string' => 'O tipo de produto deve ser uma string.',
+            'TipoProdutoId.required' => 'O tipo de produto é obrigatório.',
+            'TipoProdutoId.string' => 'O tipo de produto deve ser uma string.',
+            'TipoProdutoId.exists' => 'O ID do tipo de produto não existe.',
         ];
     }
 

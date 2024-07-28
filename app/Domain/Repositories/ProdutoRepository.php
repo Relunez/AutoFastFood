@@ -45,6 +45,6 @@ class ProdutoRepository implements ProdutoRepositoryInterface
     public function findByCategory(string $id): array
     {
         $modelPersistence = $this->model->newQuery();
-        return $modelPersistence->find($id)->toArray();
+        return $modelPersistence->where('TipoProdutoId',$id)->get()->toArray();
     }
 }

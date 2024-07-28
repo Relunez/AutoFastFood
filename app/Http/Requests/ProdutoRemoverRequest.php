@@ -16,15 +16,16 @@ class ProdutoRemoverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'TipoProduto' => 'required|string',
+            'id' => 'required|integer|exists:produto,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'TipoProduto.required' => 'O tipo de produto é obrigatório.',
-            'TipoProduto.string' => 'O tipo de produto deve ser uma string.',
+            'id.required' => 'O id produto é obrigatório.',
+            'id.string' => 'O id do produto deve ser um numero.',
+            'id.exists' => 'O id do produto não existe.',
         ];
     }
 

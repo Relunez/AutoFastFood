@@ -450,7 +450,7 @@
         }
       }
     },
-    "/produtos/categoria/{id}": {
+    "/produtos/buscar/{id}": {
       "get": {
         "summary": "Buscar produtos por categoria",
         "description": "Busca produtos com base no ID da categoria",
@@ -567,7 +567,7 @@
         }
       }
     },
-    "/pedidos/status/{id}": {
+    "/pedidos/{id}/status": {
       "put": {
         "tags": [
           "Pedidos"
