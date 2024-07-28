@@ -45,10 +45,8 @@ class ProdutoController
         return response()->json(['message' => 'Produto removido com sucesso']);
     }
 
-    public function buscarPorCategoria(ProdutoBuscarPorCategoriaRequest $request, int $id): \Illuminate\Http\JsonResponse
+    public function buscarPorCategoria(int $id): \Illuminate\Http\JsonResponse
     {
-        $data = $request->validated();
-
         $produtos = Produto::buscarPorCategoria($id);
 
         if (!$produtos) {

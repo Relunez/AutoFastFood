@@ -16,7 +16,7 @@ class PedidoFakeCheckoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ClienteId' => 'required|integer|exists:clientes,id',
+            'ClienteId' => 'required|integer|exists:cliente,id',
             'pagamentoId' => 'sometimes|integer|exists:pagamentos,id',
             'Produtos' => 'required|array',
             'Produtos.*.ProdutoId' => 'required|integer|exists:produtos,id',

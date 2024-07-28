@@ -22,9 +22,9 @@ class ClienteCadastrarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'CPF' => 'nullable|string|size:11|unique:clientes,CPF',
+            'CPF' => 'nullable|string|size:11|unique:cliente,CPF',
             'Nome' => 'nullable|string|max:100',
-            'Email' => 'nullable|email|unique:clientes,Email',
+            'Email' => 'nullable|email|unique:cliente,Email',
         ];
     }
 

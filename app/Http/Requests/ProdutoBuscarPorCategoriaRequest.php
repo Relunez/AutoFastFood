@@ -23,9 +23,9 @@ class ProdutoBuscarPorCategoriaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id.required' => 'O tipo de produto é obrigatório.',
-            'id.string' => 'O tipo de produto deve ser uma string.',
-            'id.exists' => 'O ID do tipo de produto não existe.',
+            'id.required' => 'O Id tipo de produto é obrigatório.',
+            'id.string' => 'O Id tipo de produto deve ser uma string.',
+            'id.exists' => 'O Id do tipo de produto não existe.',
         ];
     }
 
