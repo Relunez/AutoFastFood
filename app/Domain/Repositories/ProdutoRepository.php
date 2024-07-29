@@ -47,4 +47,10 @@ class ProdutoRepository implements ProdutoRepositoryInterface
         $modelPersistence = $this->model->newQuery();
         return $modelPersistence->where('TipoProdutoId',$id)->get()->toArray();
     }
+
+    public function listar(): array
+    {
+        $modelPersistence = $this->model->newQuery();
+        return $modelPersistence->get()->toArray();
+    }
 }

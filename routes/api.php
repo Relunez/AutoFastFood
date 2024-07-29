@@ -14,6 +14,7 @@ Route::prefix('clientes')->group(function () {
 // Rotas de Produtos
 Route::prefix('produtos')->group(function () {
     Route::post('/', [ProdutoController::class, 'criar']);
+    Route::get('/', [ProdutoController::class, 'listar']);
     Route::put('/{id}', [ProdutoController::class, 'editar']);
     Route::delete('/{id}', [ProdutoController::class, 'remover']);
     Route::get('/buscar/{id}', [ProdutoController::class, 'buscarPorCategoria']);
