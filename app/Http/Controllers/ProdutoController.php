@@ -45,6 +45,17 @@ class ProdutoController
         return response()->json(['message' => 'Produto removido com sucesso']);
     }
 
+    public function listar(): \Illuminate\Http\JsonResponse
+    {
+        $produtos = Produto::listar();
+
+        if (!$produtos) {
+            return response()->json(['message' => 'Produtos não encontrados'], 404);
+        }
+
+        return response()->json($produtos);
+    }
+
     public function buscarPorCategoria(int $id): \Illuminate\Http\JsonResponse
     {
         $produtos = Produto::buscarPorCategoria($id);

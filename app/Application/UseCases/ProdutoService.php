@@ -28,6 +28,11 @@ class ProdutoService
         return $this->produtoRepository->delete($id);
     }
 
+    public function listar(): array
+    {
+        return $this->produtoRepository->listar();
+    }
+
     public function buscarPorCategoria(string $id): array
     {
         return $this->produtoRepository->findByCategory($id);

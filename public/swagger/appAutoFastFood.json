@@ -347,6 +347,27 @@
         }
       }
     },
+    "/produtos": {
+      "get": {
+        "summary": "listar todos os produtos",
+        "description": "listar todos os produtos sem filtro",
+        "tags": [
+          "Produtos"
+        ],
+        "responses": {
+          "201": {
+            "description": "Listagem com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/produtos/{id}": {
       "put": {
         "summary": "Editar um produto existente",
@@ -539,10 +560,10 @@
         "tags": [
           "Pedidos"
         ],
-        "summary": "Listar pedidos",
+        "summary": "Listar pedidos e Pagamentos",
         "responses": {
           "200": {
-            "description": "Lista de pedidos",
+            "description": "Lista de pedidos com todos os seus objetos",
             "content": {
               "application/json": {
                 "schema": {

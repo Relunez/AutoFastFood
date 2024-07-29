@@ -119,6 +119,12 @@ Para acessar a documentação das APIs usando Swagger UI, abra seu navegador e v
 
 http://localhost:8000/api
 
+## Banco de Dados
+
+Para acessar o banco de dados diretamente foi criado um services para direcionamento para o localhost
+
+http://localhost:3306
+
 ## Docs
 
 Em _docs, temos o MER do banco de dados e o JSON do OpenAPI/Swagger
